@@ -93,15 +93,15 @@ class Provider(abc.ABC):
         pass
 
     @abc.abstractmethod
-    async def _process_and_print(
-        self, filename: str, show_comments: bool = False
-    ) -> None:
-        pass
-
-    @abc.abstractmethod
     async def ensure_login(self, username: str, password: str) -> None:
         pass
 
-    @abc.abstractmethod
-    async def _login(self, username: str, password: str, redir_url: str = None) -> None:
-        pass
+    # @abc.abstractmethod
+    # async def _process_and_print(
+    #     self, filename: str, show_comments: bool = False
+    # ) -> None:
+    #     pass
+
+    # @abc.abstractmethod
+    # async def _login(self, username: str, password: str, redir_url: str = None) -> None:
+    #     pass
