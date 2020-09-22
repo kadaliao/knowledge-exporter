@@ -14,3 +14,9 @@
 
 - [x] PDF（方便iPad查阅、批注）
 - [ ] 视频合集
+
+
+
+#### 使用方法
+
+python3 app.py --username 手机号 --password 密码 专栏ID
