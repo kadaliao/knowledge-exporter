@@ -30,12 +30,15 @@ class GeekTime(Provider):
             title = title.strip(" - 极客时间")
 
             foldername = sanitize_filepath(
-                f"{article.column.title}/{article.chapter.id}_{article.chapter.title}"
+                # f"{article.column.title}/{article.chapter.id}_{article.chapter.title}"
+                article.column.title
             )
 
             os.makedirs(name=foldername, exist_ok=True)
 
-            filename = sanitize_filepath(f"{foldername}/{article.id}_{article.title}")
+            filename = sanitize_filepath(
+                f"{foldername}/{article.chapter.id}_{article.chapter.title}_{article.id}_{article.title}"
+            )
             filename = filename.replace(" ", "_")
 
             await self._process_and_print(filename)

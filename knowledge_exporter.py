@@ -11,14 +11,10 @@ logger = get_logger(__name__)
 def get_args():
     parser = ArgumentParser(description="下载知识付费专栏💸")
     parser.add_argument("column_id", type=int, help="专栏ID", action="store", default=280)
+    parser.add_argument("--username", type=str, required=True, help="用户名/手机号")
+    parser.add_argument("--password", type=str, required=True, help="密码")
     parser.add_argument(
-        "--username", type=str, required=True, help="用户名/手机号"
-    )
-    parser.add_argument(
-        "--password", type=str, required=True, help="密码"
-    )
-    parser.add_argument(
-        "--headless", type=bool, default=True, help="启用无头模式[True/False]", action="store"
+        "--no-headless", default=False, help="禁用无头模式", action="store_true"
     )
 
     args = parser.parse_args()
@@ -28,20 +24,20 @@ def get_args():
 
 class KnowledgeExporter:
     def __init__(self, exporter_class):
-        self.Exporter = exporter_class
+        self._exporter_class = exporter_class
+
+    @property
+    def Exporter(self):
+        return self._exporter_class(self.headless)
 
     async def coro(self, column_id):
-        await self.Exporter(self.headless).ensure_login(self.username, self.password)
-        column, chapters, articles = await self.Exporter(
-            self.headless
-        ).fetch_column_info(column_id)
+        await self.Exporter.ensure_login(self.username, self.password)
+        column, chapters, articles = await self.Exporter.fetch_column_info(column_id)
 
         logger.info(f"📖 《{column.title}》，总共 {len(articles)} 文章需要下载！")
 
         tasks = [
-            self.Exporter(self.headless).download_article(
-                article, semaphore=self.semaphore
-            )
+            self.Exporter.download_article(article, semaphore=self.semaphore)
             for article in articles
         ]
         tasks = asyncio.as_completed(tasks)
@@ -54,7 +50,7 @@ class KnowledgeExporter:
     def run(self):
         args = get_args()
 
-        self.headless = args.headless
+        self.headless = not args.no_headless
         self.username = args.username
         self.password = args.password
 
