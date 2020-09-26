@@ -16,7 +16,11 @@
 - [ ] 视频合集
 
 
+#### How to install
 
-#### 使用方法
+pip install knowledge-exporter
 
-python3 app.py --username 手机号 --password 密码 专栏ID
+
+#### How to use
+
+knowledge-exporter --username 手机号 --password 密码 专栏ID
