@@ -8,9 +8,9 @@ from typing import List, Tuple
 from pathvalidate import sanitize_filepath
 from pyppeteer.network_manager import Request, Response
 
-from knowledge import Article, Chapter, Column
-from provider import Provider
-from utils import get_logger
+from .knowledge import Article, Chapter, Column
+from .provider import Provider
+from .utils import get_logger
 
 logger = get_logger(__name__)
 

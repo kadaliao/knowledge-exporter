@@ -3,7 +3,7 @@ from argparse import ArgumentParser
 
 from tqdm import tqdm
 
-from utils import get_logger
+from .utils import get_logger
 
 logger = get_logger(__name__)
 

@@ -9,7 +9,7 @@ def get_logger(name: str) -> logging.Logger:
     return logger
 
 
-def _get_screen_size() -> Tuple[int, int]:
+def get_screen_size() -> Tuple[int, int]:
     from tkinter import Tk
 
     root = Tk()

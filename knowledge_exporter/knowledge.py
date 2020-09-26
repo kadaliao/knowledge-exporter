@@ -1,11 +1,6 @@
 #!/usr/bin/env python3
 
-# from collections import namedtuple
 from dataclasses import dataclass
-
-# Column = namedtuple("Column", "id title")
-# Chapter = namedtuple("Chapter", "id title column")
-# Article = namedtuple("Article", "id title content chapter column")
 
 
 @dataclass

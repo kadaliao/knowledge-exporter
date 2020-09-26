@@ -4,7 +4,7 @@ from typing import List, Tuple
 
 import pyppeteer
 
-from knowledge import Article, Chapter, Column
+from .knowledge import Article, Chapter, Column
 
 
 class Provider(abc.ABC):
