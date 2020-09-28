@@ -5,7 +5,7 @@ import random
 import sys
 from typing import List, Tuple
 
-from pathvalidate import sanitize_filepath
+from pathvalidate import sanitize_filename, sanitize_filepath
 from pyppeteer.network_manager import Request, Response
 
 from .knowledge import Article, Chapter, Column
@@ -29,17 +29,15 @@ class GeekTime(Provider):
             title = await self.page.title()
             title = title.strip(" - 极客时间")
 
-            foldername = sanitize_filepath(
-                # f"{article.column.title}/{article.chapter.id}_{article.chapter.title}"
-                article.column.title
-            )
-
+            foldername = sanitize_filename(article.column.title)
             os.makedirs(name=foldername, exist_ok=True)
 
-            filename = sanitize_filepath(
-                f"{foldername}/{article.chapter.id}_{article.chapter.title}_{article.id}_{article.title}"
+            filename = sanitize_filename(
+                f"{article.chapter.id}_{article.chapter.title}_{article.id}_{article.title}"
             )
             filename = filename.replace(" ", "_")
+
+            filename = sanitize_filepath(f"{foldername}/{filename}")
 
             await self._process_and_print(filename)
             await self.page.browser.close()
