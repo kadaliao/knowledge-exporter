@@ -1,9 +1,13 @@
 import sys
+import platform
 
 from setuptools import find_packages, setup
 
 if sys.version_info < (3, 6):
     raise ValueError("This package requires python >= 3.6")
+
+if platform.system() not in ['Windows', 'Darwin']:
+    raise ValueError("This package only support Windows/MacOS.")
 
 with open("requirements.txt") as fid:
     install_requires = [line.strip() for line in fid.readlines() if line]
@@ -20,13 +24,14 @@ with open("README.md") as fid:
 setup(
     name="knowledge-exporter",
     packages=find_packages(),
-    package_data={'knowledge_exporter': ['bin/cpdf']},
-    scripts=['knowledge_exporter/bin/cpdf-wrapper'],
+    package_data={"knowledge_exporter": ["bin/cpdf", "bin/cpdf.exe"]},
+    scripts=["knowledge_exporter/bin/cpdf-wrapper"],
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
         "Operating System :: MacOS",
+        "Operating System :: Microsoft :: Windows",
         "Programming Language :: Python :: 3 :: Only",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
@@ -42,6 +47,5 @@ setup(
     url="https://github.com/kadaliao/knowledge-exporter",
     keywords=["pdf", "knowledge", "download"],
     python_requires=">=3.6",
-    entry_points={"console_scripts": [
-        "knowledge-exporter=knowledge_exporter:main"]},
+    entry_points={"console_scripts": ["knowledge-exporter=knowledge_exporter:main"]},
 )

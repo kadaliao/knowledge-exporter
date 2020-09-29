@@ -1,9 +1,16 @@
 import knowledge_exporter
 import subprocess
 import sys
-
+import platform
 
 path = knowledge_exporter.__path__[0]
-command = [path + "/bin/cpdf"]
+system = platform.system()
+
+if system == 'Darwin':
+    bin = "/bin/cpdf"
+elif system == 'Windows':
+    bin = "/bin/cpdf.exe"
+
+command = [path + bin]
 command.extend(sys.argv[1:])
 subprocess.call(command)
