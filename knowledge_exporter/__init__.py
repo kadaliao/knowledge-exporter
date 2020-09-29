@@ -22,10 +22,9 @@ provider_map = {provider.__name__: provider for provider in PROVIDERS}
 @click.option("-p", "--password", required=True, help="密码")
 @click.option("--merge/--no-merge", default=True, help="合并专栏文章")
 @click.option("--headless/--head", default=True, help="使用无头浏览器", hidden=True)
-@click.option("--show-comments/--no-comments", default=True, help="显示文章评论")
+@click.option("--show-comments/--no-comments", default=True, help="显示文章评论", hidden=True)
 @click.argument("column_id", type=int, required=True)
 def main(**kwargs):
-    # def main(target, username, password, merge, headless, show_comments, column_id):
     target = kwargs.pop("target")
     exporter_class = provider_map[target]
     app = KnowledgeExporter(exporter_class, **kwargs)

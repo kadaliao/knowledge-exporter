@@ -1,6 +1,9 @@
 import asyncio
+import subprocess
 from argparse import ArgumentParser
+from shutil import rmtree
 
+from pathvalidate import sanitize_filename
 from tqdm import tqdm
 
 from .utils import get_logger
@@ -44,7 +47,7 @@ class KnowledgeExporter:
             self.column_id
         )
 
-        logger.info(f"📖 《{column.title}》，总共 {len(articles)} 文章需要下载！")
+        print(f"📖 《{column.title}》，总共 {len(articles)} 文章需要下载！")
 
         tasks = [
             self.Exporter.download_article(article, semaphore=self.semaphore)
@@ -56,6 +59,22 @@ class KnowledgeExporter:
             # TODO 异常处理，任务取消
             title = await task
             tqdm.write(f"📄 已下载：{title}")
+
+        if self.merge:
+            cpdf_cmd = "cpdf-wrapper"
+            column_folder = sanitize_filename(column.title)
+            column_pdf = sanitize_filename(column.title + ".pdf")
+
+            print('📦 开始合并专栏文章')
+
+            subprocess.call(
+                [cpdf_cmd, "-idir", column_folder, "-o", column_pdf],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
+            )
+            rmtree(column_folder)
+
+        print('💐 搞定，撒花。')
 
     def run(self):
         asyncio.get_event_loop().run_until_complete(self.coro())

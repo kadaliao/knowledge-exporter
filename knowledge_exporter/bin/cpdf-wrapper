@@ -1,0 +1,9 @@
+import knowledge_exporter
+import subprocess
+import sys
+
+
+path = knowledge_exporter.__path__[0]
+command = [path + "/bin/cpdf"]
+command.extend(sys.argv[1:])
+subprocess.call(command)

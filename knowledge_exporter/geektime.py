@@ -134,7 +134,8 @@ class GeekTime(Provider):
 
             if column_data and chapters_data and articles_data:
                 column = Column(column_data["id"], column_data["column_title"])
-                chapters = [Chapter(d["id"], d["title"], column) for d in chapters_data]
+                chapters = [Chapter(d["id"], d["title"], column)
+                            for d in chapters_data]
                 chapter_id_map = {chapter.id: chapter for chapter in chapters}
                 articles = [
                     Article(

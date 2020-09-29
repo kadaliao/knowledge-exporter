@@ -20,6 +20,8 @@ with open("README.md") as fid:
 setup(
     name="knowledge-exporter",
     packages=find_packages(),
+    package_data={'knowledge_exporter': ['bin/cpdf']},
+    scripts=['knowledge_exporter/bin/cpdf-wrapper'],
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Development Status :: 3 - Alpha",
@@ -39,5 +41,6 @@ setup(
     url="https://github.com/kadaliao/knowledge-exporter",
     keywords=["pdf", "knowledge", "download"],
     python_requires=">=3.6",
-    entry_points={"console_scripts": ["knowledge-exporter=knowledge_exporter:main"]},
+    entry_points={"console_scripts": [
+        "knowledge-exporter=knowledge_exporter:main"]},
 )
