@@ -18,8 +18,6 @@ Options:
   -u, --username TEXT             手机号/用户名  [required]
   -p, --password TEXT             密码  [required]
   --merge / --no-merge            合并专栏文章
-  --show-comments / --no-comments
-                                  显示文章评论
   --help                          Show this message and exit.
 ```
 
