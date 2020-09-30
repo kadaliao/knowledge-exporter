@@ -6,6 +6,7 @@ import sys
 from typing import List, Tuple
 
 from pathvalidate import sanitize_filename, sanitize_filepath
+from pyppeteer.errors import TimeoutError
 from pyppeteer.network_manager import Request, Response
 
 from .knowledge import Article, Chapter, Column
@@ -119,8 +120,9 @@ class GeekTime(Provider):
         try:
             response = await self.page.goto(url, waitUntil=["load", "networkidle0"])
 
-            if response.status == 404:
-                logger.error("🙉 错误的专栏ID")
+            if not response or response.status == 404:
+                print("🙉 错误的专栏ID")
+                await self.page.browser.close()
                 sys.exit(1)
 
             # 点击课程目录栏
@@ -146,7 +148,7 @@ class GeekTime(Provider):
             return column, chapters, articles
 
         except Exception as e:
-            logger.error("⁉ 获取专栏文章列表失败：%s" % e)
+            print("⁉ 获取专栏文章列表失败：%s" % e)
             sys.exit(1)
         finally:
             # 关闭浏览器
@@ -179,7 +181,7 @@ class GeekTime(Provider):
             )
 
             if "注册" in userinfo_text:
-                logger.info("👤 账户未登录！")
+                print("👤 账户未登录！")
                 await self._login(username, password, redir_url=self.page.url)
 
         self.cookies = await self.page.cookies()
@@ -208,6 +210,35 @@ class GeekTime(Provider):
 
         await username_input.type(username)
         await password_input.type(password)
-        await login_link.click()
-        await self.page.waitForNavigation()
-        logger.info("🉑 登录好了")
+
+        # async def intercept_request(req: Request):
+        #     await req.continue_()
+
+        # async def intercept_response(res: Response):
+        #     print(res.url, res.ok)
+        #     if "account/ticket/login" in res.url:
+        #         json_text = await res.text()
+        #         data = json.loads(json_text)
+        #         code = data["code"]
+        #         error = data["error"]
+
+        #         if code == -1:
+        #             print(f"😲 登录失败，{error['msg']}。")
+        #             # if error['code'] != -3031:
+        #             #     print("🆘 请使用无头模式启动以便手动完成登录。")
+        #             await self.page.browser.close()
+        #             sys.exit()
+
+        # 启用拦截器
+        # await self.page.setRequestInterception(True)
+        # self.page.on("response", intercept_response)
+        # self.page.on("request", intercept_request)
+
+        try:
+            self.page.setDefaultNavigationTimeout(10000)
+            await login_link.click()
+            await self.page.waitForNavigation()
+            print("🉑 登录好了")
+        except TimeoutError:
+            print("🆘 登录失败，请确保手机号、密码正确，可使用 --head 开启浏览器尝试")
+            sys.exit()
