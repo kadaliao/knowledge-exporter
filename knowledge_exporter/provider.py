@@ -42,7 +42,7 @@ class Provider(abc.ABC):
             """() =>{ Object.defineProperty(navigator, 'plugins', { get: () => [1, 2, 3, 4, 5,6], }); }"""
         )
 
-    async def _init(self):
+    async def _prepare(self):
         """初始化浏览器"""
         # width, height = _get_screen_size()  # 获得屏幕分辨率
         width, height = 1920, 1080
@@ -77,8 +77,18 @@ class Provider(abc.ABC):
         # 浏览器窗口很大，内容显示很小，需要设定page.setViewport
         await self.page.setViewport({"width": width, "height": height})
 
+    async def _inject_cookies(self):
+        for cookie in self.cookies:
+            await self.page.setCookie(cookie)
+
+    async def init_page(self):
+        await self._prepare()
+        await self._inject_js()
+        await self._inject_cookies()
+
     def __init__(self, headless: bool = True):
         self.headless = headless
+        self.cookies = {}
 
     @abc.abstractmethod
     async def fetch_column_info(

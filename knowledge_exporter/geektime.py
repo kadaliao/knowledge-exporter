@@ -20,8 +20,7 @@ class GeekTime(Provider):
         self, article: Article, semaphore: asyncio.Semaphore
     ) -> str:
         async with semaphore:
-            await self._init()
-            await self._inject_js()
+            await self.init_page()
             url = f"https://time.geekbang.org/column/article/{article.id}"
             # print(f'🔗 {url}')
             await self.page.goto(url, waitUntil=["load", "networkidle0"])
@@ -48,8 +47,7 @@ class GeekTime(Provider):
     @classmethod
     async def create(cls, *args, **kwargs):
         self = cls(*args, **kwargs)
-        await self._init()
-        await self._inject_js()
+        await self.init_page()
         return self
 
     async def _process_and_print(
@@ -78,8 +76,7 @@ class GeekTime(Provider):
     async def fetch_column_info(
         self, column_id: str
     ) -> Tuple[Column, List[Chapter], List[Article]]:
-        await self._init()
-        await self._inject_js()
+        await self.init_page()
 
         articles_data = []
         column_data = {}
@@ -134,8 +131,7 @@ class GeekTime(Provider):
 
             if column_data and chapters_data and articles_data:
                 column = Column(column_data["id"], column_data["column_title"])
-                chapters = [Chapter(d["id"], d["title"], column)
-                            for d in chapters_data]
+                chapters = [Chapter(d["id"], d["title"], column) for d in chapters_data]
                 chapter_id_map = {chapter.id: chapter for chapter in chapters}
                 articles = [
                     Article(
@@ -158,8 +154,7 @@ class GeekTime(Provider):
             await asyncio.sleep(random.randint(1, 3))
 
     async def ensure_login(self, username: str, password: str) -> None:
-        await self._init()
-        await self._inject_js()
+        await self.init_page()
 
         url = "https://time.geekbang.org/column/intro/280"
         await self.page.goto(url, waitUntil=["load", "networkidle2"])
@@ -186,6 +181,8 @@ class GeekTime(Provider):
             if "注册" in userinfo_text:
                 logger.info("👤 账户未登录！")
                 await self._login(username, password, redir_url=self.page.url)
+
+        self.cookies = await self.page.cookies()
 
         await self.page.browser.close()
         await asyncio.sleep(2)

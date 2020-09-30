@@ -40,9 +40,6 @@ class KnowledgeExporter:
     async def coro(self):
         await self.Exporter.ensure_login(self.username, self.password)
 
-        # 多等一会儿，免得后面打开的浏览器实例还未登录
-        await asyncio.sleep(3)
-
         column, chapters, articles = await self.Exporter.fetch_column_info(
             self.column_id
         )
