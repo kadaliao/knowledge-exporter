@@ -1,3 +1,4 @@
+#!/bin/env python
 import knowledge_exporter
 import subprocess
 import sys
