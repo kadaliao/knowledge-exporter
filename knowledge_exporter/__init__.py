@@ -1,5 +1,3 @@
-from argparse import ArgumentParser
-
 import click
 
 from .exporter import KnowledgeExporter
